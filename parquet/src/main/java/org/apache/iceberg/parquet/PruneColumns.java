@@ -113,8 +113,11 @@ class PruneColumns extends TypeWithSchemaVisitor<Type> {
     Type repeated = list.getType(0);
     Type originalElement = ParquetSchemaUtil.determineListElementType(list);
     Integer elementId = getId(originalElement);
+    Integer listId = getId(list);
 
     if (elementId != null && selectedIds.contains(elementId)) {
+      return list;
+    } else if (listId != null && selectedIds.contains(listId) && originalElement.isPrimitive()) {
       return list;
     } else if (element != null) {
       if (!Objects.equal(element, originalElement)) {
@@ -126,7 +129,6 @@ class PruneColumns extends TypeWithSchemaVisitor<Type> {
       }
       return list;
     }
-
     return null;
   }
 
